@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import SpeechRecognition, { useSpeechRecognition as useSpeechRecognitionLib } from 'react-speech-recognition';
-import { analyzeBid, detectBidIntent} from './bidAnalyzer';
+import { analyzeBid, detectBidIntent } from './bidAnalyzer';
 
 const useSpeechRecognition = (initialPrice = 5000) => {
+    
     // 가장 최근에 인식된 음성 결과를 저장하는 state
     const [lastResult, setLastResult] = useState('');
 
     // 가장 최근에 인식된 음성 결과의 신뢰도를 저장하는 state
     const [confidence, setConfidence] = useState(0);
-    
     
     const [currentPrice, setCurrentPrice] = useState(initialPrice);
 
@@ -50,23 +50,29 @@ const useSpeechRecognition = (initialPrice = 5000) => {
                     const result = event.results[event.results.length - 1];
                     const transcriptResult = result[0].transcript;
                     const confidenceScore = result[0].confidence;
+                    
                     console.log('Speech recognition result:', transcriptResult);
                     console.log('Confidence:', confidenceScore);
                     
                     // 가장 최근에 인식된 결과를 lastResult state에 저장
                     setLastResult(transcriptResult);
                     setConfidence(confidenceScore);
+
                     const analysis = analyzeBid(transcriptResult);
+                    console.log('Bid analysis:', analysis);
+
                     if (detectBidIntent(analysis) && analysis.numbers.length > 0) {
-                        const newPrice = parseInt(analysis.numbers[0]);
+                        const newPrice = Math.max(...analysis.numbers);
+                        console.log("New price:", newPrice, "Current price:", currentPrice);
                         if (!isNaN(newPrice) && newPrice > currentPrice) {
                             setCurrentPrice(newPrice);
+                            console.log('이 금액으로 업데이트됨:', newPrice);
                         }
                     }
                 };
             }
         }
-    }, [browserSupportsSpeechRecognition, currentPrice]);
+    }, [browserSupportsSpeechRecognition]);
 
     // 음성 인식 시작 함수
     const handleStart = useCallback(() => {
