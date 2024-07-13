@@ -21,7 +21,7 @@ const SpeechRecognitionComponent = () => {
 
   // 금액을 올바른 형식으로 표시하는 함수
   const formatAmount = (amount) => {
-    const wonAmount = convertToWon(amount);
+    const wonAmount = typeof amount === 'number' ? amount : convertToWon(amount);
     return wonAmount.toLocaleString() + '원';
   };
 

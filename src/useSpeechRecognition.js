@@ -10,6 +10,7 @@ const useSpeechRecognition = (initialPrice = 5000) => {
     // 가장 최근에 인식된 음성 결과의 신뢰도를 저장하는 state
     const [confidence, setConfidence] = useState(0);
     
+    // 현재 가격을 저장하는 state
     const [currentPrice, setCurrentPrice] = useState(initialPrice);
 
     // react-speech-recognition 라이브러리의 useSpeechRecognition 훅 사용
@@ -35,13 +36,13 @@ const useSpeechRecognition = (initialPrice = 5000) => {
                 recognition.maxAlternatives = 1; // 가장 정확한 결과 하나만 반환
                 
                 // 음성 인식 시작 시 호출되는 콜백
-                recognition.onstart = () => console.log('Speech recognition started');
+                // recognition.onstart = () => console.log('Speech recognition started');
 
                 // 음성 인식 종료 시 호출되는 콜백
-                recognition.onend = () => console.log('Speech recognition ended');
+                // recognition.onend = () => console.log('Speech recognition ended');
 
                 // 음성 인식 오류 발생 시 호출되는 콜백
-                recognition.onerror = (event) => console.error('Speech recognition error', event);
+                // recognition.onerror = (event) => console.error('Speech recognition error', event);
 
                 // 음성 인식 결과가 생성될 때마다 호출되는 콜백
                 recognition.onresult = (event) => {
@@ -52,7 +53,7 @@ const useSpeechRecognition = (initialPrice = 5000) => {
                     const confidenceScore = result[0].confidence;
                     
                     console.log('Speech recognition result:', transcriptResult);
-                    console.log('Confidence:', confidenceScore);
+                    console.log('Confidence:', confidenceScore * 100);
                     
                     // 가장 최근에 인식된 결과를 lastResult state에 저장
                     setLastResult(transcriptResult);
@@ -72,17 +73,17 @@ const useSpeechRecognition = (initialPrice = 5000) => {
                 };
             }
         }
-    }, [browserSupportsSpeechRecognition]);
+    }, [browserSupportsSpeechRecognition, currentPrice]);
 
     // 음성 인식 시작 함수
     const handleStart = useCallback(() => {
-        console.log('Starting speech recognition...');
+        // console.log('Starting speech recognition...');
         SpeechRecognition.startListening({ continuous: true, language: 'ko-KR' });
     }, []);
 
     // 음성 인식 중지 함수
     const handleStop = useCallback(() => {
-        console.log('Stopping speech recognition...');
+        // console.log('Stopping speech recognition...');
         SpeechRecognition.stopListening();
     }, []);
 
